@@ -1,9 +1,11 @@
 import logging
 import logging.config
+import asyncio
 from pyrogram import Client 
 from config import API_ID, API_HASH, BOT_TOKEN, FORCE_SUB, PORT, DB_NAME
 from aiohttp import web
 from plugins.web_support import web_server
+from plugins.web_support import ping_server
 
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
@@ -41,6 +43,9 @@ class Bot(Client):
        await app.setup()
        bind_address = "0.0.0.0"
        await web.TCPSite(app, bind_address, PORT).start()
+       asyncio.create_task(ping_server())
+       logging.info("Web server started")
+       logging.info("Pinging server")
        logging.info(f"{me.first_name} ✅✅ BOT started successfully ✅✅")
       
 
